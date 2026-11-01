@@ -62,9 +62,10 @@
   };
 
   const sampleLines = [
-    { timestamp: "2026-10-20T09:14:00Z", type: marker, feature: "ambient_suggestions", model: "example-model-a", input_tokens: 1820, cached_input_tokens: 1100, output_tokens: 240, reasoning_tokens: 80, total_tokens: 2060 },
-    { timestamp: "2026-10-20T09:16:30Z", type: marker, feature: "background_summary", model: "example-model-a", input_tokens: 740, output_tokens: 315, reasoning_tokens: 95 },
-    { timestamp: "2026-10-20T09:18:12Z", type: marker, model: "example-model-b", input_tokens: 510, output_tokens: 126, total_tokens: 636 }
+    JSON.stringify({ timestamp: "2026-10-20T09:14:00Z", type: marker, feature: "ambient_suggestions", model: "example-model-a", input_tokens: 1820, cached_input_tokens: 1100, output_tokens: 240, reasoning_tokens: 80, total_tokens: 2060 }),
+    JSON.stringify({ timestamp: "2026-10-20T09:16:30Z", type: marker, feature: "background_summary", model: "example-model-a", input_tokens: 740, output_tokens: 315, reasoning_tokens: 95 }),
+    JSON.stringify({ timestamp: "2026-10-20T09:18:12Z", type: marker, model: "example-model-b", input_tokens: 510, output_tokens: 126, total_tokens: 636 }),
+    "2026-10-20T09:20:00Z ephemeral_generation_token_usage feature=ambient_suggestions model=example-model-c inputTokens=1000 cachedInputTokens=300 outputTokens=120 reasoningOutputTokens=40 totalTokens=1120"
   ];
 
   let lang = "en";
@@ -179,7 +180,37 @@
     if (start >= 0 && end > start) {
       try { return { value: JSON.parse(trimmed.slice(start, end + 1)), malformed: false }; } catch {}
     }
-    return { value: null, malformed: true };
+    const textEvent = parseKeyValueEvent(trimmed);
+    return textEvent ? { value: textEvent, malformed: false } : { value: null, malformed: true };
+  }
+
+  function parseKeyValueEvent(line) {
+    if (!line.includes(marker)) return null;
+    const fieldMap = new Map([
+      ["timestamp", "timestamp"], ["time", "timestamp"], ["ts", "timestamp"],
+      ["feature", "feature"], ["featurename", "feature"], ["featureid", "feature"],
+      ["model", "model"], ["modelname", "model"], ["modelid", "model"],
+      ["inputtokens", "input_tokens"], ["inputtokencount", "input_tokens"], ["prompttokens", "prompt_tokens"],
+      ["cachedinputtokens", "cached_input_tokens"], ["cachereadinputtokens", "cache_read_input_tokens"],
+      ["outputtokens", "output_tokens"], ["outputtokencount", "output_tokens"], ["completiontokens", "completion_tokens"],
+      ["reasoningtokens", "reasoning_tokens"], ["reasoningoutputtokens", "reasoning_tokens"],
+      ["totaltokens", "total_tokens"], ["totaltokencount", "total_tokens"]
+    ]);
+    const event = { type: marker };
+    const leadingTime = line.match(/^\s*(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z)\b/);
+    if (leadingTime) event.timestamp = leadingTime[1];
+    const pairs = /(?:^|\s)([A-Za-z_][A-Za-z0-9_.-]*)=("[^"]*"|'[^']*'|[^\s]+)/g;
+    let match;
+    let recognized = 0;
+    while ((match = pairs.exec(line)) !== null) {
+      const target = fieldMap.get(normalizeKey(match[1]));
+      if (!target) continue;
+      let value = match[2];
+      if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) value = value.slice(1, -1);
+      event[target] = value;
+      recognized++;
+    }
+    return recognized ? event : null;
   }
 
   function normalizeEvent(match, fileNumber, lineNumber, occurrence) {
@@ -202,7 +233,7 @@
       input,
       output,
       cachedInput: findNumber(data, ["cached_input_tokens", "cachedInputTokens", "cache_read_input_tokens", "cacheReadInputTokens"]),
-      reasoning: findNumber(data, ["reasoning_tokens", "reasoningTokens"]),
+      reasoning: findNumber(data, ["reasoning_tokens", "reasoningTokens", "reasoningOutputTokens"]),
       total
     };
   }
@@ -328,7 +359,11 @@
   }
 
   function loadSample() {
-    records = sampleLines.map((event, index) => normalizeEvent({ context: event, data: event }, 1, index + 1, index + 1));
+    records = [];
+    sampleLines.forEach((line, index) => {
+      const parsed = parseJsonLine(line);
+      for (const match of eventMatches(parsed.value)) records.push(normalizeEvent(match, 1, index + 1, index + 1));
+    });
     records.sort((a, b) => (a.time || "").localeCompare(b.time || ""));
     malformedLines = 0;
     isSample = true;

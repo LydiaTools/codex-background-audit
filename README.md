@@ -17,7 +17,7 @@ Those reports point to a narrow, useful job: make matching local events easier t
 ## What it does
 
 - Reads local `.log`, `.txt`, `.jsonl`, and `.ndjson` files in your browser tab.
-- Finds `ephemeral_generation_token_usage` records and shows their time, feature, model, input, output, cached input, reasoning, and recorded total when present.
+- Finds `ephemeral_generation_token_usage` records in JSON and `key=value` log lines, then shows their time, feature, model, input, output, cached input, reasoning, and recorded total when present.
 - Groups matched records by feature and model, and exports only normalized fields.
 - Includes English and Simplified Chinese UI.
 - Works as a static page with no account, API key, telemetry, or third-party JavaScript.
@@ -37,7 +37,7 @@ For a related tool that switches Codex ambient mode on or off, see [codex-ambien
 2. Choose local Codex log files or drop them onto the page.
 3. Review the matched events and export the normalized JSON if needed.
 
-To run from source, open `index.html` in a modern browser. No build step or dependency install is required. Click **Try a fictional sample** to see the interface without using your own logs. The sample is synthetic and does not represent Codex activity.
+To run from source, open `index.html` in a modern browser. No build step or dependency install is required. Click **Try a fictional sample** to see the interface without using your own logs. The mixed-format example in `examples/fictional-log.log` demonstrates both supported line shapes. All sample data is synthetic and does not represent Codex activity.
 
 ## Privacy
 
@@ -45,7 +45,7 @@ The app has no upload code, analytics, remote parser, or external script depende
 
 ## Project status
 
-This is an early, narrowly scoped utility. The event format is based on public user reports and can vary between versions. If your logs use another shape, open an issue with a redacted example containing only the relevant field names and values.
+This is an early, narrowly scoped utility. JSON and `key=value` examples follow shapes described in [public Codex user reports](https://github.com/openai/codex/issues/48833); event formats can vary between versions. If your logs use another shape, open an issue with a redacted example containing only the relevant field names and values.
 
 ## Independence
 
@@ -62,7 +62,7 @@ Codex Background Audit 会读取你选择的日志文件，查找 `ephemeral_gen
 ### 它能做什么
 
 - 在浏览器标签页内读取本地 `.log`、`.txt`、`.jsonl` 和 `.ndjson` 文件。
-- 查找目标事件，并展示日志里存在的时间、功能、模型、输入、输出、缓存输入、推理和总数。
+- 在 JSON 记录和 `key=value` 文本行中查找目标事件，并展示日志里存在的时间、功能、模型、输入、输出、缓存输入、推理和总数。
 - 按功能和模型汇总匹配记录，只导出整理后的字段。
 - 支持简体中文和英文界面。
 - 静态运行，无需账号、API Key、遥测或第三方 JavaScript。
@@ -82,13 +82,13 @@ Codex Background Audit 会读取你选择的日志文件，查找 `ephemeral_gen
 2. 选择本地 Codex 日志，或拖入页面。
 3. 查看匹配事件，需要时导出整理后的 JSON。
 
-也可以直接用现代浏览器打开 `index.html`，无需构建或安装依赖。点击“试用虚构示例”可以先体验界面；示例为合成数据，不代表 Codex 活动。
+也可以直接用现代浏览器打开 `index.html`，无需构建或安装依赖。点击“试用虚构示例”可以先体验界面；`examples/fictional-log.log` 同时展示两种行格式。示例为合成数据，不代表 Codex 活动。
 
 ### 隐私与项目状态
 
 页面没有上传代码、分析统计、远程解析服务或外部脚本依赖。所选文件只在当前标签页内处理；导出不含原始日志行、文件名、路径或提示词。
 
-这是一个范围有限的早期工具。事件格式可能随版本变化。如果你的日志格式不同，可以提交脱敏后的相关字段示例。
+这是一个范围有限的早期工具。JSON 和 `key=value` 示例参考了[公开的 Codex 用户报告](https://github.com/openai/codex/issues/48833)，实际事件格式可能随版本变化。如果你的日志格式不同，可以提交脱敏后的相关字段示例。
 
 ### 项目关系
 

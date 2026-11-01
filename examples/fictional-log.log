@@ -1,0 +1,4 @@
+{"timestamp":"2026-10-20T09:14:00Z","type":"ephemeral_generation_token_usage","feature":"ambient_suggestions","model":"example-model-a","input_tokens":1820,"cached_input_tokens":1100,"output_tokens":240,"reasoning_tokens":80,"total_tokens":2060}
+{"timestamp":"2026-10-20T09:16:30Z","type":"ephemeral_generation_token_usage","feature":"background_summary","model":"example-model-a","input_tokens":740,"output_tokens":315,"reasoning_tokens":95}
+{"timestamp":"2026-10-20T09:18:12Z","type":"ephemeral_generation_token_usage","model":"example-model-b","input_tokens":510,"output_tokens":126,"total_tokens":636}
+2026-10-20T09:20:00Z ephemeral_generation_token_usage feature=ambient_suggestions model=example-model-c inputTokens=1000 cachedInputTokens=300 outputTokens=120 reasoningOutputTokens=40 totalTokens=1120
