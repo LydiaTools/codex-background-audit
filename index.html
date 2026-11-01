@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3f6f4">
+  <meta name="description" content="Inspect Codex background token events recorded in local log files. Files stay in your browser; no quota guesses.">
+  <title>Codex Background Audit</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="Codex Background Audit home">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span>CODEX <b>BACKGROUND AUDIT</b></span>
+    </a>
+    <nav class="top-actions" aria-label="Page controls">
+      <a class="quiet-link" href="https://github.com/LydiaTools/codex-background-audit" data-i18n="source">Source</a>
+      <div class="language-switch" role="group" aria-label="Language">
+        <button type="button" data-language="en" aria-pressed="true">EN</button>
+        <button type="button" data-language="zh" aria-pressed="false">中文</button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="intro" aria-labelledby="page-title">
+      <div class="intro-copy">
+        <p class="eyebrow"><span class="live-dot"></span><span data-i18n="eyebrow">A LOCAL LOG READER</span></p>
+        <h1 id="page-title" data-i18n="headline">Make the background visible.</h1>
+        <p class="lede" data-i18n="lede">When a usage allowance moves, your local records may still leave one question open: which feature generated the work? Read the events your logs actually contain.</p>
+      </div>
+      <aside class="boundary-note" aria-label="Scope">
+        <span class="boundary-label" data-i18n="boundaryLabel">THE LINE WE DRAW</span>
+        <strong data-i18n="boundaryTitle">Evidence, not attribution.</strong>
+        <p data-i18n="boundaryText">This reads logged token events. It cannot tell you how a provider counted them against an account limit.</p>
+      </aside>
+    </section>
+
+    <section class="import-section" aria-labelledby="import-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow section-kicker" data-i18n="step">01 / OPEN A LOG</p>
+          <h2 id="import-title" data-i18n="importTitle">Bring your own evidence.</h2>
+        </div>
+        <p class="local-note"><span class="lock-icon" aria-hidden="true">⌑</span><span data-i18n="localNote">Files stay in this tab. Nothing is uploaded.</span></p>
+      </div>
+      <div class="drop-zone" id="drop-zone" tabindex="0" role="button" aria-label="Choose local log files">
+        <input id="file-input" type="file" accept=".log,.txt,.jsonl,.ndjson,application/json,text/plain" multiple hidden>
+        <div class="drop-mark" aria-hidden="true"><span>＋</span></div>
+        <div class="drop-copy">
+          <strong data-i18n="dropTitle">Drop log files here</strong>
+          <span data-i18n="dropSub">or choose .log, .txt, .jsonl, and .ndjson files</span>
+        </div>
+        <button class="button button-dark" id="choose-files" type="button" data-i18n="chooseFiles">Choose files</button>
+      </div>
+      <div class="import-footer">
+        <button class="text-button" id="load-sample" type="button"><span aria-hidden="true">↗</span> <span data-i18n="trySample">Try a fictional sample</span></button>
+        <p data-i18n="matchNote">Looks for <code>ephemeral_generation_token_usage</code> records.</p>
+      </div>
+      <p class="status-line" id="status" role="status" aria-live="polite" hidden></p>
+    </section>
+
+    <section class="results" id="results" aria-labelledby="results-title" hidden>
+      <div class="results-heading">
+        <div>
+          <p class="eyebrow section-kicker" data-i18n="step02">02 / READ WHAT WAS RECORDED</p>
+          <h2 id="results-title" data-i18n="resultsTitle">The event trail.</h2>
+        </div>
+        <div class="result-actions">
+          <button class="button button-light" id="export-json" type="button" data-i18n="export">Export normalized JSON</button>
+          <button class="icon-button" id="clear-data" type="button" aria-label="Clear data" title="Clear data">×</button>
+        </div>
+      </div>
+      <p class="sample-banner" id="sample-banner" hidden><span aria-hidden="true">✳</span> <span data-i18n="sampleBanner">Fictional sample data. No Codex activity is represented.</span></p>
+      <div class="summary-strip" id="summary-strip"></div>
+      <div class="empty-result" id="empty-result" hidden>
+        <span class="empty-mark" aria-hidden="true">∅</span>
+        <div><strong data-i18n="emptyTitle">No matching records found.</strong><p data-i18n="emptyText">That means these files contain no recognizable event in this format. It does not establish that no background work occurred.</p></div>
+      </div>
+      <div class="analysis-grid" id="analysis-grid">
+        <section class="timeline-panel" aria-labelledby="timeline-title">
+          <div class="panel-heading">
+            <div><p class="eyebrow section-kicker" data-i18n="timelineKicker">OBSERVED EVENTS</p><h3 id="timeline-title" data-i18n="timelineTitle">By time</h3></div>
+            <span class="panel-count" id="record-count"></span>
+          </div>
+          <ol class="timeline" id="timeline"></ol>
+        </section>
+        <aside class="breakdown-panel" aria-labelledby="breakdown-title">
+          <div class="panel-heading">
+            <div><p class="eyebrow section-kicker" data-i18n="breakdownKicker">GROUPED FROM MATCHED RECORDS</p><h3 id="breakdown-title" data-i18n="breakdownTitle">By feature</h3></div>
+          </div>
+          <div id="breakdown" class="breakdown-list"></div>
+          <p class="breakdown-foot" data-i18n="breakdownFoot">Only values present in a matched log record are shown. Missing labels stay “Unspecified.”</p>
+        </aside>
+      </div>
+      <p class="results-footnote" data-i18n="resultsFootnote">Totals add the matched event values shown here. Cached input is part of input; reasoning is part of output. This is not an account quota or billing report.</p>
+    </section>
+
+    <footer class="page-footer">
+      <p data-i18n="footerLine">Small tool, narrow claim: read local evidence and leave the interpretation visible.</p>
+      <a href="https://github.com/mrraylau321/codex-ambient-killer" target="_blank" rel="noreferrer" data-i18n="companion">Companion: codex-ambient-killer</a>
+    </footer>
+  </main>
+</body>
+</html>
