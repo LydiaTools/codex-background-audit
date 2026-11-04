@@ -2,58 +2,66 @@
   const marker = "ephemeral_generation_token_usage";
   const translations = {
     en: {
-      skip: "Skip to content", source: "Source", eyebrow: "A LOCAL LOG READER",
-      headline: "Make the background visible.",
-      lede: "When a usage allowance moves, your local records may still leave one question open: which feature generated the work? Read the events your logs actually contain.",
-      boundaryLabel: "THE LINE WE DRAW", boundaryTitle: "Evidence, not attribution.",
-      boundaryText: "This reads logged token events. It cannot tell you how a provider counted them against an account limit.",
-      step: "01 / OPEN A LOG", importTitle: "Bring your own evidence.",
-      localNote: "Files stay in this tab. Nothing is uploaded.", dropTitle: "Drop log files here",
-      dropSub: "or choose .log, .txt, .jsonl, and .ndjson files", chooseFiles: "Choose files",
-      trySample: "Try a fictional sample", matchNote: "Looks for ephemeral_generation_token_usage records.",
+      skip: "Skip to content", source: "Source", eyebrow: "A LOCAL CODEX AUDIT",
+      headline: "See what each agent reported.",
+      lede: "Read recorded background-token events, then compare a subagent's role file with the provider and model named in its session metadata.",
+      boundaryLabel: "THE EVIDENCE BOUNDARY", boundaryTitle: "Configured is not served.",
+      boundaryText: "A session record can differ from a role file. Neither proves which model served an API request or how usage was billed.",
+      step: "01 / OPEN LOCAL FILES", importTitle: "Bring your own evidence.",
+      localNote: "Files stay in this tab. Nothing is uploaded.", dropTitle: "Drop logs and role files here",
+      dropSub: "Choose .log, .txt, .json, .jsonl, .ndjson, or agent-role .toml files", chooseFiles: "Choose files",
+      trySample: "Try a fictional sample", matchNote: "Reads token events, session routing metadata, and selected role-file fields.",
       step02: "02 / READ WHAT WAS RECORDED", resultsTitle: "The event trail.", export: "Export normalized JSON",
       clear: "Clear data", sampleBanner: "Fictional sample data. No Codex activity is represented.",
       emptyTitle: "No matching records found.",
-      emptyText: "That means these files contain no recognizable event in this format. It does not establish that no background work occurred.",
+      emptyText: "No matching token event was found. Routing metadata, if present, is shown separately; absence does not establish that no background work occurred.",
       timelineKicker: "OBSERVED EVENTS", timelineTitle: "By time", breakdownKicker: "GROUPED FROM MATCHED RECORDS",
       breakdownTitle: "By feature", breakdownFoot: "Only values present in a matched log record are shown. Missing labels stay “Unspecified.”",
+      routeKicker: "ROLE FILE VS SESSION METADATA", routeTitle: "Agent routing records", roleHeader: "Role", configuredHeader: "Configured in TOML", reportedHeader: "Reported by session", comparisonHeader: "Comparison",
+      routeFootnote: "Session metadata is local evidence, not proof of the model that served a request. Only role name, model, provider, effort, and service-tier fields are read from TOML.",
+      modelLabel: "Model", providerLabel: "Provider", effortLabel: "Effort", tierLabel: "Service tier", noValue: "not recorded",
+      compareMismatch: "Shared fields differ", compareAgree: "Shared fields match", compareObservedOnly: "No role file loaded for this role", compareConfiguredOnly: "No session record", compareNoFields: "No shared fields to compare", sampleSource: "fictional sample",
       resultsFootnote: "Totals add the matched event values shown here. Cached input is part of input; reasoning is part of output. This is not an account quota or billing report.",
       footerLine: "Small tool, narrow claim: read local evidence and leave the interpretation visible.",
       companion: "Companion: codex-ambient-killer", records: "records", logFiles: "log files", features: "features",
       observedTokens: "LOG-OBSERVED TOKENS", summedValues: "sum of matched event values", withCounts: "records with a readable total",
       noTotal: "no total recorded", tokens: "tokens", unspecified: "Unspecified", modelUnknown: "model not recorded",
       input: "in", output: "out", cached: "cached in", reasoning: "reasoning", filesLoaded: n => `${n} file${n === 1 ? "" : "s"} read locally.`,
-      matched: (n, bad) => `${n} matching record${n === 1 ? "" : "s"} found.${bad ? ` ${bad} line${bad === 1 ? "" : "s"} containing the marker could not be parsed.` : ""}`,
-      noMatchStatus: "No matching event was found in the selected files.", fileTooBig: "Could not read this file. Try a smaller or split log file.",
+      loadedSummary: (events, routes, configs, bad) => `${events} token event${events === 1 ? "" : "s"}, ${routes} routing record${routes === 1 ? "" : "s"}, ${configs} role file${configs === 1 ? "" : "s"} read locally.${bad ? ` ${bad} marked line${bad === 1 ? "" : "s"} could not be parsed.` : ""}`,
+      noMatchStatus: "No matching event or routing metadata was found in the selected files.", fileTooBig: "Could not read this file. Try a smaller or split log file.",
       readError: "A file could not be read. No data was uploaded.", nothingExport: "Load a file before exporting.",
       summaryTitle: "Sum of recorded totals", fileLabel: "file", lineLabel: "line", dateMissing: "time not recorded",
       countNone: "No token totals were readable.", countSome: n => `${n} of ${n === 1 ? "1 record" : "records"} with a readable total`,
       malformed: n => `${n} marked line${n === 1 ? "" : "s"} could not be parsed.`,
     },
     zh: {
-      skip: "跳到正文", source: "源码", eyebrow: "本地日志阅读器",
-      headline: "让后台记录看得见。",
-      lede: "用量额度发生变化时，本地记录里仍可能缺一个答案：究竟是哪个功能产生了这些调用？这里读取日志中实际存在的事件。",
-      boundaryLabel: "我们只做到这里", boundaryTitle: "读取记录，不推断归因。",
-      boundaryText: "工具读取日志记下的 token 事件，无法判断服务商如何将它们计入账号额度。",
-      step: "01 / 打开日志", importTitle: "选择你自己的日志。",
-      localNote: "文件只在此标签页处理，不会上传。", dropTitle: "把日志文件拖到这里",
-      dropSub: "也可以选择 .log、.txt、.jsonl 或 .ndjson 文件", chooseFiles: "选择文件",
-      trySample: "试用虚构示例", matchNote: "查找 ephemeral_generation_token_usage 记录。",
+      skip: "跳到正文", source: "源码", eyebrow: "本地 Codex 审计",
+      headline: "看清每个 Agent 记录了什么。",
+      lede: "读取后台 Token 事件，再对照子 Agent 的角色配置与会话元数据里记录的 Provider 和模型。",
+      boundaryLabel: "证据边界", boundaryTitle: "配置值不等于实际服务模型。",
+      boundaryText: "会话记录可能与角色配置不同；两者都不能证明 API 请求最终由哪个模型处理，也不能说明账单如何计算。",
+      step: "01 / 打开本地文件", importTitle: "选择你自己的证据。",
+      localNote: "文件只在此标签页处理，不会上传。", dropTitle: "拖入日志和角色配置",
+      dropSub: "选择 .log、.txt、.json、.jsonl、.ndjson 或 Agent 角色 .toml 文件", chooseFiles: "选择文件",
+      trySample: "试用虚构示例", matchNote: "读取 Token 事件、会话路由元数据及角色文件中的指定字段。",
       step02: "02 / 查看实际记录", resultsTitle: "事件时间线。", export: "导出整理后的 JSON",
       clear: "清除数据", sampleBanner: "这是虚构示例，不代表任何 Codex 活动。",
       emptyTitle: "没有找到匹配记录。",
-      emptyText: "所选文件里没有识别到这种格式的事件。这不能证明后台没有发生工作。",
+      emptyText: "没有找到匹配的 Token 事件。若有路由元数据，会单独显示；未找到记录不能证明后台没有发生工作。",
       timelineKicker: "观察到的事件", timelineTitle: "按时间", breakdownKicker: "按匹配记录汇总",
       breakdownTitle: "按功能", breakdownFoot: "只显示匹配记录里实际存在的字段。缺少标签时显示“未注明”。",
+      routeKicker: "角色配置与会话元数据", routeTitle: "Agent 路由记录", roleHeader: "角色", configuredHeader: "TOML 配置", reportedHeader: "会话记录", comparisonHeader: "对照结果",
+      routeFootnote: "会话元数据是本地记录，不代表服务商实际处理请求的模型。TOML 只读取角色名、模型、Provider、推理强度和服务档位字段。",
+      modelLabel: "模型", providerLabel: "Provider", effortLabel: "推理强度", tierLabel: "服务档位", noValue: "未记录",
+      compareMismatch: "共同字段不一致", compareAgree: "共同字段一致", compareObservedOnly: "未加载该角色的配置文件", compareConfiguredOnly: "未找到会话记录", compareNoFields: "没有共同字段可对照", sampleSource: "虚构示例",
       resultsFootnote: "合计仅累加下方匹配事件记录的数值。缓存输入属于输入，推理 token 属于输出。本结果不是账号额度或账单报告。",
       footerLine: "小工具，窄结论：读取本地证据，并把解释边界摆在明处。",
       companion: "相关工具：codex-ambient-killer", records: "条记录", logFiles: "个日志文件", features: "种功能",
       observedTokens: "日志记录的 Token", summedValues: "匹配事件数值合计", withCounts: "条记录含可读总数",
       noTotal: "未记录总数", tokens: "tokens", unspecified: "未注明", modelUnknown: "日志未记录模型",
       input: "输入", output: "输出", cached: "缓存输入", reasoning: "推理", filesLoaded: n => `已在本地读取 ${n} 个文件。`,
-      matched: (n, bad) => `找到 ${n} 条匹配记录。${bad ? `另有 ${bad} 行含标记但无法解析。` : ""}`,
-      noMatchStatus: "所选文件中没有匹配事件。", fileTooBig: "无法读取此文件，请尝试选择更小或拆分后的日志。",
+      loadedSummary: (events, routes, configs, bad) => `本地读取：${events} 条 Token 事件、${routes} 条路由记录、${configs} 个角色文件。${bad ? `另有 ${bad} 行带标记内容无法解析。` : ""}`,
+      noMatchStatus: "所选文件中没有匹配事件或路由元数据。", fileTooBig: "无法读取此文件，请尝试选择更小或拆分后的日志。",
       readError: "有文件无法读取，且没有数据被上传。", nothingExport: "请先加载日志再导出。",
       summaryTitle: "已记录总数合计", fileLabel: "文件", lineLabel: "行", dateMissing: "日志未记录时间",
       countNone: "没有可读取的 Token 总数。", countSome: n => `${n} 条记录含可读总数`,
@@ -65,11 +73,15 @@
     JSON.stringify({ timestamp: "2026-10-20T09:14:00Z", type: marker, feature: "ambient_suggestions", model: "example-model-a", input_tokens: 1820, cached_input_tokens: 1100, output_tokens: 240, reasoning_tokens: 80, total_tokens: 2060 }),
     JSON.stringify({ timestamp: "2026-10-20T09:16:30Z", type: marker, feature: "background_summary", model: "example-model-a", input_tokens: 740, output_tokens: 315, reasoning_tokens: 95 }),
     JSON.stringify({ timestamp: "2026-10-20T09:18:12Z", type: marker, model: "example-model-b", input_tokens: 510, output_tokens: 126, total_tokens: 636 }),
-    "2026-10-20T09:20:00Z ephemeral_generation_token_usage feature=ambient_suggestions model=example-model-c inputTokens=1000 cachedInputTokens=300 outputTokens=120 reasoningOutputTokens=40 totalTokens=1120"
+    "2026-10-20T09:20:00Z ephemeral_generation_token_usage feature=ambient_suggestions model=example-model-c inputTokens=1000 cachedInputTokens=300 outputTokens=120 reasoningOutputTokens=40 totalTokens=1120",
+    JSON.stringify({ timestamp: "2026-10-20T09:22:00Z", event: "agent_session_metadata", agent_role: "example_worker", model_provider: "provider-a", model: "example-model", model_reasoning_effort: "medium", service_tier: "standard" })
   ];
+  const sampleRoleConfig = 'name = "example_worker"\nmodel_provider = "provider-b"\nmodel = "example-model"\nmodel_reasoning_effort = "medium"\nservice_tier = "standard"\n';
 
   let lang = "en";
   let records = [];
+  let routeRecords = [];
+  let roleConfigs = [];
   let malformedLines = 0;
   let isSample = false;
   const $ = selector => document.querySelector(selector);
@@ -132,6 +144,70 @@
     const value = walkFor(source, aliases, candidate => typeof candidate === "string" && candidate.trim().length > 0 && candidate.trim().length <= 80);
     if (value === undefined) return "";
     return value.trim().replace(/[\u0000-\u001f\u007f]/g, " ").replace(/\s+/g, " ");
+  }
+  function ownString(source, aliases) {
+    if (!source || typeof source !== "object" || Array.isArray(source)) return "";
+    const wanted = new Set(aliases.map(normalizeKey));
+    for (const [key, value] of Object.entries(source)) {
+      if (wanted.has(normalizeKey(key)) && typeof value === "string" && value.trim().length > 0 && value.trim().length <= 80) {
+        return value.trim().replace(/[\u0000-\u001f\u007f]/g, " ").replace(/\s+/g, " ");
+      }
+    }
+    return "";
+  }
+  function routingMatches(root, fileNumber, lineNumber) {
+    const found = [];
+    const stack = [root];
+    while (stack.length) {
+      const node = stack.pop();
+      if (!node || typeof node !== "object") continue;
+      if (Array.isArray(node)) {
+        for (let i = node.length - 1; i >= 0; i--) stack.push(node[i]);
+        continue;
+      }
+      const role = ownString(node, ["agent_role", "agentRole", "role_name", "roleName"]);
+      const model = ownString(node, ["model", "model_name", "modelName"]);
+      const provider = ownString(node, ["model_provider", "modelProvider", "provider"]);
+      const effort = ownString(node, ["model_reasoning_effort", "modelReasoningEffort", "reasoning_effort", "reasoningEffort"]);
+      const tier = ownString(node, ["service_tier", "serviceTier"]);
+      if (role && (model || provider || effort || tier)) {
+        found.push({ role, model, provider, effort, tier, time: findDate(node), fileNumber, lineNumber });
+      }
+      const entries = Object.values(node);
+      for (let i = entries.length - 1; i >= 0; i--) stack.push(entries[i]);
+    }
+    return found;
+  }
+  function readTomlString(source, key) {
+    for (const line of source.split(/\r?\n/)) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#")) continue;
+      if (trimmed.startsWith("[")) break;
+      const match = trimmed.match(new RegExp(`^${key}\\s*=\\s*("(?:\\\\.|[^"\\\\])*"|'[^']*')\\s*(?:#.*)?$`));
+      if (!match) continue;
+      const raw = match[1];
+      if (raw.startsWith('"')) {
+        try { return JSON.parse(raw).trim().slice(0, 80); } catch { return ""; }
+      }
+      return raw.slice(1, -1).trim().replace(/[\u0000-\u001f\u007f]/g, " ").slice(0, 80);
+    }
+    return "";
+  }
+  function parseRoleConfig(source, fileNumber) {
+    const role = readTomlString(source, "name");
+    if (!role) return null;
+    const config = {
+      role,
+      model: readTomlString(source, "model"),
+      provider: readTomlString(source, "model_provider"),
+      effort: readTomlString(source, "model_reasoning_effort"),
+      tier: readTomlString(source, "service_tier"),
+      fileNumber
+    };
+    return config.model || config.provider || config.effort || config.tier ? config : null;
+  }
+  function parseStandaloneJson(source) {
+    try { return JSON.parse(source); } catch { return null; }
   }
   function findDate(source) {
     const value = walkFor(source, ["timestamp", "created_at", "createdAt", "event_time", "eventTime", "time", "ts"], candidate =>
@@ -266,6 +342,8 @@
 
   async function readFiles(files) {
     records = [];
+    routeRecords = [];
+    roleConfigs = [];
     malformedLines = 0;
     isSample = false;
     if (!files.length) return;
@@ -275,6 +353,24 @@
       const fileNumber = fileIndex + 1;
       try {
         let occurrence = 0;
+        const extension = files[fileIndex].name.split(".").pop().toLowerCase();
+        if (extension === "toml") {
+          const config = parseRoleConfig(await files[fileIndex].text(), fileNumber);
+          if (config) roleConfigs.push(config);
+          continue;
+        }
+        if (extension === "json") {
+          const wholeFile = await files[fileIndex].text();
+          const wholeValue = parseStandaloneJson(wholeFile);
+          if (wholeValue !== null) {
+            for (const match of eventMatches(wholeValue)) {
+              occurrence++;
+              records.push(normalizeEvent(match, fileNumber, 1, occurrence));
+            }
+            routeRecords.push(...routingMatches(wholeValue, fileNumber, 1));
+            continue;
+          }
+        }
         for await (const { line, number } of fileLines(files[fileIndex])) {
           const parsed = parseJsonLine(line);
           if (parsed.malformed) { malformedLines++; continue; }
@@ -283,14 +379,16 @@
             occurrence++;
             records.push(normalizeEvent(match, fileNumber, number, occurrence));
           }
+          routeRecords.push(...routingMatches(parsed.value, fileNumber, number));
         }
       } catch {
         showStatus(t("readError"), true, "readError");
       }
     }
     records.sort((a, b) => (a.time || "9999").localeCompare(b.time || "9999") || a.fileNumber - b.fileNumber || a.lineNumber - b.lineNumber);
-    const message = records.length ? t("matched", records.length, malformedLines) : t("noMatchStatus");
-    showStatus(message, false, records.length ? "matched" : "noMatchStatus", records.length ? [records.length, malformedLines] : []);
+    const hasEvidence = records.length || routeRecords.length || roleConfigs.length;
+    const args = [records.length, routeRecords.length, roleConfigs.length, malformedLines];
+    showStatus(hasEvidence ? t("loadedSummary", ...args) : t("noMatchStatus"), false, hasEvidence ? "loadedSummary" : "noMatchStatus", hasEvidence ? args : []);
     renderResults();
   }
 
@@ -301,6 +399,43 @@
     if (!iso) return t("dateMissing");
     return new Intl.DateTimeFormat(lang === "zh" ? "zh-CN" : "en-GB", { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
   }
+  function normalizedCompareValue(value) { return String(value || "").trim(); }
+  function routeRows() {
+    const matchedConfigs = new Set();
+    const rows = routeRecords.map(record => {
+      const configIndex = roleConfigs.findIndex(config => normalizeKey(config.role) === normalizeKey(record.role));
+      const config = configIndex >= 0 ? roleConfigs[configIndex] : null;
+      if (config) matchedConfigs.add(configIndex);
+      const pairs = config ? ["model", "provider", "effort", "tier"].filter(field => config[field] && record[field]) : [];
+      const differs = pairs.some(field => normalizedCompareValue(config[field]) !== normalizedCompareValue(record[field]));
+      const status = !config ? "observedOnly" : !pairs.length ? "noFields" : differs ? "mismatch" : "agree";
+      return { role: record.role, config, record, status };
+    });
+    roleConfigs.forEach((config, index) => {
+      if (!matchedConfigs.has(index)) rows.push({ role: config.role, config, record: null, status: "configuredOnly" });
+    });
+    return rows;
+  }
+  function routeValues(item) {
+    if (!item) return `<span class="route-empty">${escapeHtml(t("noValue"))}</span>`;
+    const fields = [
+      [t("modelLabel"), item.model], [t("providerLabel"), item.provider],
+      [t("effortLabel"), item.effort], [t("tierLabel"), item.tier]
+    ].filter(([, value]) => value);
+    return fields.length
+      ? `<dl class="route-values">${fields.map(([label, value]) => `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`).join("")}</dl>`
+      : `<span class="route-empty">${escapeHtml(t("noValue"))}</span>`;
+  }
+  function renderRouting() {
+    const rows = routeRows();
+    const section = $("#routing-section");
+    section.hidden = rows.length === 0;
+    $("#routing-table-body").innerHTML = rows.map(({ role, config, record, status }) => {
+      const statusLabel = t(`compare${status[0].toUpperCase()}${status.slice(1)}`);
+      const source = isSample ? t("sampleSource") : record ? `${t("fileLabel")} ${record.fileNumber} · ${t("lineLabel")} ${record.lineNumber}` : `${t("fileLabel")} ${config.fileNumber}`;
+      return `<tr><th scope="row"><strong>${escapeHtml(role)}</strong><small>${escapeHtml(source)}</small></th><td>${routeValues(config)}</td><td>${routeValues(record)}</td><td><span class="route-status route-status-${escapeHtml(status)}">${escapeHtml(statusLabel)}</span></td></tr>`;
+    }).join("");
+  }
   function escapeHtml(value) {
     return String(value).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
   }
@@ -309,6 +444,7 @@
     if (results.hidden) return;
     $("#sample-banner").hidden = !isSample;
     const hasRecords = records.length > 0;
+    $("#summary-strip").hidden = !hasRecords;
     $("#analysis-grid").hidden = !hasRecords;
     $("#empty-result").hidden = hasRecords;
     const totals = records.filter(record => record.total !== null);
@@ -324,6 +460,7 @@
     $("#record-count").textContent = `${records.length} ${t("records")}`;
     renderTimeline();
     renderBreakdown();
+    renderRouting();
   }
 
   function renderTimeline() {
@@ -360,25 +497,35 @@
 
   function loadSample() {
     records = [];
+    routeRecords = [];
+    roleConfigs = [parseRoleConfig(sampleRoleConfig, 1)].filter(Boolean);
     sampleLines.forEach((line, index) => {
       const parsed = parseJsonLine(line);
       for (const match of eventMatches(parsed.value)) records.push(normalizeEvent(match, 1, index + 1, index + 1));
+      routeRecords.push(...routingMatches(parsed.value, 1, index + 1));
     });
     records.sort((a, b) => (a.time || "").localeCompare(b.time || ""));
     malformedLines = 0;
     isSample = true;
     results.hidden = false;
-    showStatus(t("matched", records.length, 0), false, "matched", [records.length, 0]);
+    const args = [records.length, routeRecords.length, roleConfigs.length, 0];
+    showStatus(t("loadedSummary", ...args), false, "loadedSummary", args);
     renderResults();
   }
 
   function exportNormalized() {
-    if (!records.length) { showStatus(t("nothingExport"), true, "nothingExport"); return; }
+    if (!records.length && !routeRecords.length && !roleConfigs.length) { showStatus(t("nothingExport"), true, "nothingExport"); return; }
     const payload = {
       format: "codex-background-audit.normalized.v1",
-      scope: "local-log-observed-only; not account quota or billing attribution",
+      scope: "local-log-and-session-metadata-observed-only; not served-model, account-quota, or billing attribution",
       fictional_sample: isSample,
-      records: records.map(({ fileNumber, lineNumber, time, feature, model, input, output, cachedInput, reasoning, total }) => ({ fileNumber, lineNumber, time, feature, model: model || null, inputTokens: input, outputTokens: output, cachedInputTokens: cachedInput, reasoningTokens: reasoning, recordedTotalTokens: total }))
+      records: records.map(({ fileNumber, lineNumber, time, feature, model, input, output, cachedInput, reasoning, total }) => ({ fileNumber, lineNumber, time, feature, model: model || null, inputTokens: input, outputTokens: output, cachedInputTokens: cachedInput, reasoningTokens: reasoning, recordedTotalTokens: total })),
+      routing_records: routeRows().map(({ role, config, record, status }) => ({
+        role,
+        configured: config ? { model: config.model || null, provider: config.provider || null, reasoningEffort: config.effort || null, serviceTier: config.tier || null } : null,
+        sessionReported: record ? { model: record.model || null, provider: record.provider || null, reasoningEffort: record.effort || null, serviceTier: record.tier || null, time: record.time, fileNumber: record.fileNumber, lineNumber: record.lineNumber } : null,
+        comparison: status
+      }))
     };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
@@ -397,7 +544,7 @@
   $("#load-sample").addEventListener("click", loadSample);
   $("#export-json").addEventListener("click", exportNormalized);
   $("#clear-data").addEventListener("click", () => {
-    records = []; malformedLines = 0; isSample = false; results.hidden = true; fileInput.value = ""; showStatus("");
+    records = []; routeRecords = []; roleConfigs = []; malformedLines = 0; isSample = false; results.hidden = true; fileInput.value = ""; showStatus("");
   });
   for (const eventName of ["dragenter", "dragover"]) dropZone.addEventListener(eventName, event => { event.preventDefault(); dropZone.classList.add("dragover"); });
   for (const eventName of ["dragleave", "drop"]) dropZone.addEventListener(eventName, event => { event.preventDefault(); dropZone.classList.remove("dragover"); });

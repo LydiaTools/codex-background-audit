@@ -71,6 +71,22 @@ code { font-family: var(--mono); font-size: .95em; color: #385c55; }
 .icon-button { width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 4px; background: transparent; color: var(--muted); font-size: 22px; line-height: 1; cursor: pointer; }
 .icon-button:hover { color: var(--red); border-color: #d9aaaa; }
 .sample-banner { margin: 0 0 15px; padding: 10px 13px; border-left: 2px solid var(--gold); background: #fbf5e9; color: #775c27; font-size: 12px; }
+.routing-section { padding: 12px 0 25px; border-bottom: 1px solid var(--line); margin-bottom: 22px; }
+.routing-table-wrap { overflow-x: auto; }
+.routing-table { width: 100%; min-width: 690px; border-collapse: collapse; text-align: left; }
+.routing-table th, .routing-table td { padding: 13px 14px 13px 0; border-bottom: 1px solid #e1e8e4; vertical-align: top; }
+.routing-table thead th { color: var(--muted); font: 700 9px/1.4 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+.routing-table tbody th { min-width: 125px; font-size: 12px; font-weight: 600; overflow-wrap: anywhere; }
+.routing-table tbody th small { display: block; margin-top: 5px; color: var(--muted); font: 9px/1.4 var(--mono); }
+.route-values { display: grid; gap: 5px; margin: 0; }
+.route-values div { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 7px; }
+.route-values dt { color: var(--muted); font-size: 10px; }
+.route-values dd { margin: 0; font: 10px/1.45 var(--mono); overflow-wrap: anywhere; }
+.route-empty { color: var(--muted); font-size: 10px; }
+.route-status { display: inline-block; max-width: 145px; padding: 4px 7px; border: 1px solid var(--line); color: #566967; font-size: 10px; line-height: 1.35; }
+.route-status-mismatch { border-color: #e1b8a6; background: #fbf1eb; color: #9c5031; }
+.route-status-agree { border-color: #b5d4c9; background: #edf6f1; color: #286d5e; }
+.route-footnote { margin: 13px 0 0; max-width: 800px; color: var(--muted); font-size: 11px; line-height: 1.55; }
 .summary-strip { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: 22px; }
 .metric { padding: 16px 18px 16px 0; }.metric + .metric { padding-left: 18px; border-left: 1px solid var(--line); }
 .metric-label { display: block; color: var(--muted); font: 10px/1.4 var(--mono); letter-spacing: .07em; text-transform: uppercase; }
@@ -114,6 +130,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid #4bb6a3; outline-offs
   .topbar { height: 62px; padding: 0 19px; }.brand { font-size: 9px; gap: 8px; letter-spacing: .09em; }.brand-mark { transform: scale(.85) skewY(-20deg); transform-origin: left center; margin-right: -3px; }.top-actions { gap: 14px; }.quiet-link { display: none; }
   main { width: min(100% - 38px, 600px); }.intro { grid-template-columns: 1fr; gap: 30px; padding: 54px 0 44px; }.intro-copy { max-width: 600px; } h1 { font-size: clamp(43px, 11vw, 65px); }.lede { font-size: 16px; }.boundary-note { max-width: 420px; }
   .section-heading, .results-heading { align-items: start; flex-direction: column; }.local-note { margin-top: 0; }.drop-zone { display: grid; grid-template-columns: 43px 1fr; gap: 11px 13px; padding: 17px; }.drop-mark { grid-row: span 2; }.drop-copy { align-self: end; }.drop-copy span { line-height: 1.4; }.drop-zone .button { grid-column: 2; justify-self: start; margin-top: 4px; }.import-footer { align-items: start; flex-direction: column; gap: 8px; }.import-footer p { line-height: 1.45; }
+  .routing-table { min-width: 650px; }.route-footnote { margin-top: 10px; }
   .result-actions { align-self: stretch; }.button { padding: 9px 11px; }.summary-strip { grid-template-columns: repeat(2, 1fr); }.metric { padding: 12px 10px 12px 0; }.metric + .metric { padding-left: 12px; }.metric:nth-child(3) { border-left: 0; padding-left: 0; border-top: 1px solid var(--line); }.metric:nth-child(4) { border-top: 1px solid var(--line); }
   .analysis-grid { grid-template-columns: 1fr; }.timeline-panel { padding: 0 0 24px; }.breakdown-panel { border-left: 0; border-top: 1px solid var(--line); padding: 24px 0; }.event-row { grid-template-columns: 74px 11px minmax(0, 1fr); gap: 10px; }.event-tokens { grid-column: 3; text-align: left; margin-top: -3px; }.event-tokens span { display: inline; margin-right: 5px; }.page-footer { flex-direction: column; gap: 8px; }
 }
