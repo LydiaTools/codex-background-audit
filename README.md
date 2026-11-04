@@ -1,6 +1,6 @@
 # Codex Background Audit
 
-**A child can be configured for one provider and reported under another. A background usage change can still leave you guessing which feature produced it.**
+**A subagent's role file can name one provider while its session metadata reports another. When background usage changes, it can still be hard to see which feature produced it.**
 
 Codex Background Audit reads selected local files and puts two kinds of evidence in one place:
 
